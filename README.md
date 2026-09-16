@@ -1,198 +1,262 @@
-## Rentify Backend
+# Rentify Backend — Real Estate & Property Rental Marketplace REST API
 
-Rentify Backend is a production‑ready, scalable REST API for a modern rental marketplace. It powers property listings, search, booking flows, payments, reviews, and real‑time conversations between guests and hosts. The service is built on Spring Boot with a strong focus on clean architecture, security, and predictable domain behavior.
+[![CI / Build & Test](https://github.com/polchduikt/rentify-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/polchduikt/rentify-backend/actions)
+[![Tests: 200+ Passing](https://img.shields.io/badge/Tests-200%2B%20Passing-brightgreen.svg)](#testing--code-quality)
+[![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0_Spec-6BA539.svg?logo=openapiinitiative&logoColor=white)](docs/API_SURFACE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-### Overview
+[![Java 17](https://img.shields.io/badge/Java-17-orange.svg?logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/17/)
+[![Spring Boot 3.4.3](https://img.shields.io/badge/Spring%20Boot-3.4.3-brightgreen.svg?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Security 6](https://img.shields.io/badge/Spring_Security-6.x-6DB33F.svg?logo=springsecurity&logoColor=white)](https://spring.io/projects/spring-security)
+[![PostgreSQL 16](https://img.shields.io/badge/PostgreSQL-16-336791.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis 7](https://img.shields.io/badge/Redis-7-DC382D.svg?logo=redis&logoColor=white)](https://redis.io/)
+[![Hibernate / JPA](https://img.shields.io/badge/Hibernate-ORM_JPA-59666C.svg?logo=hibernate&logoColor=white)](https://hibernate.org/)
+[![JWT Auth](https://img.shields.io/badge/JWT-Stateless_Auth-000000.svg?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Google OAuth 2.0](https://img.shields.io/badge/Google_OAuth-2.0-4285F4.svg?logo=google&logoColor=white)](https://developers.google.com/identity)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_CDN-3448C5.svg?logo=cloudinary&logoColor=white)](https://cloudinary.com/)
+[![MapStruct](https://img.shields.io/badge/MapStruct-1.5.5-E05D44.svg)](https://mapstruct.org/)
+[![Testcontainers](https://img.shields.io/badge/Testcontainers-Integration_Tests-0B1C28.svg?logo=testcontainers&logoColor=white)](https://testcontainers.com/)
+[![Docker](https://img.shields.io/badge/Docker-Multi--Stage-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Swagger UI](https://img.shields.io/badge/Swagger-OpenAPI_3-85EA2D.svg?logo=swagger&logoColor=black)](#swagger--openapi-documentation)
 
-Rentify provides the backend for a full‑featured property rental platform. It exposes versioned JSON APIs for:
+---
 
-- Public property discovery and search
-- Secure authentication and user management
-- Host‑side listing management, availability, and pricing
-- Booking lifecycle (request, confirm, cancel)
-- Payments and wallet operations
-- Favorites, reviews, and conversations between users
+## Overview
 
-The API is documented with OpenAPI/Swagger and is designed to be consumed by web and mobile frontends.
+**Rentify Backend** is a production-grade, highly scalable RESTful API powering a modern rental marketplace and property accommodation platform. It handles the complete lifecycle of property listings, geo-spatial discovery and faceted search, conflict-free booking reservations, internal wallet transactions, direct host-guest messaging, verified guest reviews, and monetization through promotion and subscription tiers.
 
-## Technologies
+Engineered with **Clean Architecture**, **Domain-Driven Design (DDD)** principles, and strict enterprise security standards, Rentify Backend delivers high-throughput request processing, strict data consistency, and seamless integration with modern web and mobile frontends.
 
-- **Language**: Java 17
-- **Framework**: Spring Boot 3 (Web, Security, Validation)
-- **Persistence**: Spring Data JPA
-- **Database**: PostgreSQL
-- **In-memory store**: Redis (token revocation / security state)
-- **Authentication**: JWT, cookie or bearer strategy, Google OAuth
-- **Object Mapping**: MapStruct
-- **Build Tool**: Maven
-- **Cloud Storage**: Cloudinary
-- **API Docs**: springdoc-openapi (Swagger UI)
-- **Testing**: JUnit 5, Spring Boot Test, Testcontainers (PostgreSQL)
+<p align="center">
+  <img src="docs/screenshots/api-overview.png" alt="Rentify Backend Architecture & API Overview" width="100%" />
+</p>
 
-### Performance & Security
+---
 
-- **JWT security**: Configurable expiration and secret key via environment variables
-- **OAuth 2.0**: Google sign‑in for simplified onboarding
-- **Cookie or bearer strategy**: Configurable auth strategy (HTTP‑only cookies or `Authorization` header)
-- **CORS configuration**: Restricts allowed origins and supports modern SPAs
-- **Database access**: JPA with lazy loading controls and `open-in-view=false` to avoid N+1 in web layer
-- **HTTP caching**: Long‑lived cache headers for static resources
-- **Input validation**: Bean Validation (Jakarta) for DTOs on all major endpoints
-- **Typed DTOs and mappers**: Clear separation between persistence models and external contracts
+## Tech Stack
 
-### Core Features
+### Core Frameworks & Runtime
+- **Java 17 (Eclipse Temurin)**: Long-term support Java runtime utilizing modern language features.
+- **Spring Boot 3.4.3** (Spring Framework 6.x): Core enterprise application framework.
+- **Spring Web MVC**: High-performance RESTful API controllers with standard HTTP semantics and OpenAPI annotations.
+- **Spring Security 6 & JJWT (0.11.5)**: Stateless authentication architecture with HMAC-SHA256 tokens and Google OAuth2 ID token verification.
+- **Spring Data JPA & Hibernate**: ORM layer with `open-in-view=false`, entity graph fetching, and query optimization.
+- **Jakarta Bean Validation**: Strict runtime validation of all request DTO payloads.
 
-#### Authentication & Users
+### Persistence, Cache & In-Memory Layer
+- **PostgreSQL 16**: Relational storage with ACID compliance, indexed multi-column filters, and transactional integrity.
+- **Redis 7 (Alpine)**: Distributed in-memory data store powering instant JWT token revocation lists (blacklisting), session state, and fast cache lookups.
+- **Auditing & Entity Lifecycle**: Base `@MappedSuperclass` models (`AuditableEntity`, `CreatedAtEntity`) for automated timestamping and lifecycle tracking.
 
-- **Email/password registration and login** with JWT tokens
-- **Google OAuth login** using ID tokens
-- **Configurable auth strategy**: bearer tokens or secure cookies
-- **Logout** that clears auth cookie in cookie mode
-- **User profile** endpoints for querying and updating account data (email, name, etc.)
+### Security & Session Management
+- **Dual-Mode Authentication Strategy**: Configurable auth strategy supporting secure HTTP-only cookies (`SameSite=Lax`, `Secure`, `HttpOnly`) for modern SPAs and standard `Authorization: Bearer <token>` headers for mobile clients.
+- **CSRF Token Handshake**: Cookie-to-header cross-site request forgery prevention mechanism (`X-CSRF-Token`) for cookie-based authentication.
+- **Granular RBAC**: Role-Based Access Control (`ROLE_GUEST`, `ROLE_HOST`, `ROLE_ADMIN`) securing listing operations, booking confirmations, and wallet transactions.
+- **BCrypt Password Hashing**: Adaptive hashing algorithm securing user credentials.
 
-#### Properties & Search
+### Media & Cloud Integrations
+- **Cloudinary Java SDK (1.39.0)**: Cloud-native multipart image uploading, format transformations, secure deletion, and global CDN delivery for property galleries and user avatars.
+- **Google OAuth 2.0 Client**: Token verifier for social single sign-on (SSO).
 
-- **Public listings** with pagination and sorting
-- **Host‑owned listings**: each user can manage their own properties
-- **CRUD operations** on properties for authenticated hosts
-- **Search API** with rich filters (location, price, dates, amenities, etc.) and pageable responses
-- **Map pins endpoint** for efficient map rendering of property coordinates
-- **Status management**: property lifecycle states (e.g. DRAFT, ACTIVE, INACTIVE, BLOCKED)
+### Mapping & Documentation
+- **MapStruct 1.5.5**: Zero-overhead, compile-time type-safe DTO-to-entity mappers.
+- **Project Lombok**: Boilerplate reduction for data models and dependency injection.
+- **SpringDoc OpenAPI 3.0 (v2.8.5)**: Automated OpenAPI 3.0 specification generation and interactive Swagger UI.
 
-#### Availability & Calendar
+### Testing & DevOps
+- **Testcontainers 1.21.4**: Hermetic PostgreSQL container testing ensuring exact production parity in integration test suites.
+- **JUnit 5, Mockito & AssertJ**: 200+ unit and integration tests across services, mappers, and controllers.
+- **Multi-Stage Docker**: Lightweight Eclipse Temurin JRE container builds.
+- **Docker Compose**: Multi-service local environment orchestration (PostgreSQL, Backend API, Frontend SPA).
 
-- **Manual availability blocks** for hosts to close out specific dates
-- **Merged availability** from both bookings and manual blocks
-- **Unavailable date ranges API** for building booking calendars in the frontend
+---
 
-#### Photos & Media
+## Core Features
 
-- **Photo upload API** for properties using multipart form data
-- **Cloudinary integration** for image storage, optimization, and CDN delivery
-- **Photo deletion** with proper ownership checks
+- **Multi-Strategy Authentication & Google SSO**: User onboarding via Email/Password or Google OAuth 2.0. Dynamic token delivery via HTTP-only secure cookies (with CSRF protection) or Bearer header tokens.
+- **User Profile & Avatar Management**: Complete profile lifecycle with Cloudinary avatar uploads, secure password rotation, and safe account deactivation.
+- **Faceted Property Search & Interactive Map Pins**: Multi-criteria search filters (city, district, price min/max, guest capacity, bedrooms, amenities, property type, available dates) paired with high-speed `/map-pins` endpoint for lightweight geo-coordinate clustering.
+- **Host Property Lifecycle & Media Gallery**: Host property CRUD operations, lifecycle state management (`DRAFT`, `ACTIVE`, `INACTIVE`, `BLOCKED`), multi-photo uploads with Cloudinary CDN optimization, and ownership enforcement.
+- **Smart Availability Engine & Collision Prevention**: Unified calendar engine merging real-time guest booking reservations with host manual availability blocks, with automated date-range collision detection preventing double-bookings.
+- **End-to-End Booking Workflow**: Multi-state reservation state machine (`PENDING`, `CONFIRMED`, `REJECTED`, `CANCELLED`, `COMPLETED`), automatic price calculation (nightly rate, cleaning fee, service fee, total), and host approval/rejection workflows.
+- **Internal Wallet & Transaction Ledger**: In-app wallet management with configurable currency (`UAH`), predefined top-up amounts, balance validation, booking payment execution, and paginated transaction audit history.
+- **Monetization & Promotion Packages**: TOP property placement, subscription packages, and automated promotion expiration schedulers to boost listing visibility in search results.
+- **Direct Host-Guest Messaging**: Context-aware messaging threads tied to properties and bookings, message history, unread counters, and instant communication.
+- **Verified Reviews & Multi-Criteria Ratings**: Post-stay feedback loop allowing guests to review completed bookings with rating categories (cleanliness, accuracy, communication, location, check-in, value) and dynamic property rating aggregates.
+- **Favorites & Wishlists**: One-click bookmarking for properties with instant personal collection retrieval.
+- **Location Taxonomy & Amenity Directories**: Autocomplete location suggestion service for cities, districts, metro stations, and residential complexes alongside category-grouped amenities.
 
-#### Bookings & Payments
+---
 
-- **Booking creation and management** for guests
-- **Availability validation** before confirming bookings
-- **Payments and wallet operations** (deposits, charges, payouts) exposed via dedicated controllers
-- **Promotions and discounts** support through promotion APIs
+## System Architecture & Patterns
 
-#### Favorites, Reviews & Conversations
+Rentify Backend is designed as a modular, maintainable Clean Architecture service.
 
-- **Favorites API** so users can bookmark properties
-- **Reviews API** for guests to leave structured feedback for stays
-- **Conversations/Chats** between hosts and guests for a booking or listing
-- **Location directory and amenities** APIs to power filters and discovery UI
+### Architecture Overview
+- **Layered Architecture**: Strict separation of concerns across Presentation (Controllers & DTOs), Domain/Service Layer (Business rules, validations, state machines), and Data Access (Spring Data JPA Repositories & Entities).
+- **Dual Authentication Strategy Pattern**: Seamless switching between stateless Bearer header authorization and browser-native HTTP-only cookies with CSRF token validation (`AuthCookieService`).
+- **Conflict-Free Booking & Availability Matrix**: Transactional date-range validation algorithm that verifies zero collisions against both active reservations and manual calendar blocks within transactional boundaries.
+- **Compile-Time DTO Serialization (MapStruct)**: High-performance DTO mapping generated at compile time, eliminating runtime reflection overhead and preventing accidental internal entity exposure.
+- **Database Query Optimization & Anti-N+1 Protection**: Disabled `open-in-view` pattern (`spring.jpa.open-in-view=false`) forcing explicit transaction-scoped data fetching via `@EntityGraph` and custom JPQL queries.
+- **Auditing & Entity Lifecycle Tracking**: Base classes (`AuditableEntity`, `CreatedAtEntity`) ensuring transparent timestamping and auditing across all persistent entities.
+- **Hermetic Integration Testing with Testcontainers**: Automated spin-up of containerized PostgreSQL instances (`AbstractIntegrationTest`) ensuring test isolation and zero reliance on mocked databases.
 
-### Repository Structure
+---
 
-- **main** – Stable, production‑ready branch
-- **dev** – Active development branch with latest features
+## Testing & Code Quality
 
-Core source layout:
+The codebase undergoes rigorous automated testing and static analysis to guarantee stability, data integrity, and production readiness:
 
-- `src/main/java/com/rentify/core` – Application code (config, domain, services, controllers)
-- `src/main/resources` – Configuration (`application.properties`, `application-secret.properties`, SQL/data resources)
-- `src/test/java/com/rentify/core` – Unit and integration tests
+- **200+ Unit & Integration Tests**: Comprehensive JUnit 5 and Mockito test suite covering business logic, domain services, custom validation rules, and error handling.
+- **Testcontainers PostgreSQL Integration Suite**: Real PostgreSQL container test suite validating authentication flows, cookie sessions, booking lifecycles, review submissions, property creation, search queries, and wallet operations.
+- **Strict Jakarta Validation**: Strict constraint annotations (`@Valid`, `@NotNull`, `@NotBlank`, `@Positive`, `@Future`) on all incoming request payloads to eliminate invalid data at the boundary.
+- **Multi-Stage Docker Validation**: Containerized build and packaging verification.
 
-### Getting Started
+### Running Tests Locally
 
-#### Prerequisites
+```bash
+# Run all unit and integration tests (requires Docker Desktop running)
+./mvnw clean test
 
-- **Java** 17+ (runtime)
-- **Maven** 3.9+ (or wrapper)
-- **PostgreSQL**
-- **Docker Desktop** (recommended for local DB and integration tests)
+# Run a specific integration test class
+./mvnw test -Dtest=RegistrationIntegrationTest
 
-#### Installation
+# Run unit tests only
+./mvnw test -Dtest=*UnitTest
+```
 
-1. **Clone the repository**
+---
 
-   ```bash
-   git clone https://github.com/polchduikt/rentify-backend.git
-   cd rentify-backend
-   ```
+## Repository Structure
 
-2. **Configure environment variables**
+```
+rentify-backend/
+├── .mvn/                               # Maven wrapper configuration
+├── docs/
+│   ├── API_SURFACE.md                  # Complete REST API & endpoint specification
+│   └── screenshots/
+│       └── api-overview.png            # Architecture & API overview diagram
+├── src/
+│   ├── main/
+│   │   ├── java/com/rentify/core/
+│   │   │   ├── config/                 # Security, OpenAPI, Cloudinary, CORS, Cookie configs
+│   │   │   ├── controller/             # REST API controllers (Auth, Booking, Property, Wallet, etc.)
+│   │   │   ├── dto/                    # Request & Response Data Transfer Objects
+│   │   │   ├── entity/                 # JPA Domain Entities (User, Property, Booking, Payment, etc.)
+│   │   │   ├── enums/                  # Domain Enums (BookingStatus, PropertyStatus, Roles, etc.)
+│   │   │   ├── exception/              # Global exception handling & custom domain errors
+│   │   │   ├── mapper/                 # MapStruct compile-time DTO mappers
+│   │   │   ├── repository/             # Spring Data JPA repositories with custom JPQL queries
+│   │   │   ├── scheduler/              # Scheduled tasks (promotion expiries, cleanup jobs)
+│   │   │   ├── security/               # JWT utilities, Custom UserDetailsService, Auth filters
+│   │   │   ├── service/                # Domain business logic interfaces & implementations
+│   │   │   ├── validation/             # Custom Jakarta validators and annotations
+│   │   │   └── RentifyBackendApplication.java
+│   │   └── resources/
+│   │       ├── application.properties  # Main application configuration
+│   │       └── application-secret.properties # Local secret overrides (gitignored)
+│   └── test/
+│       └── java/com/rentify/core/
+│           ├── integration/            # Testcontainers PostgreSQL full-stack integration tests
+│           └── unit/                   # Isolated Mockito unit tests for service layer
+├── Dockerfile                          # Multi-stage Eclipse Temurin JRE container build
+├── docker-compose.yml                  # Local multi-service infrastructure (PostgreSQL, Backend, Frontend)
+├── pom.xml                             # Maven dependencies & build configuration
+└── README.md                           # Project documentation
+```
 
-   The application reads secrets from environment variables (referenced in `application.properties`) or from `application-secret.properties` on the classpath.
+---
 
-   Complete local configuration example (single block):
+## Running Locally
 
-   ```bash
-   DB_URL=jdbc:postgresql://localhost:5432/rentify
-   DB_USERNAME=postgres
-   DB_PASSWORD=your_db_password
-   SECRET_KEY=your_base64_jwt_secret
-   GOOGLE_CLIENT_ID=your_google_client_id
-   AUTH_STRATEGY=cookie
-   AUTH_COOKIE_NAME=rentify_access_token
-   AUTH_COOKIE_DOMAIN=
-   AUTH_COOKIE_SECURE=false
-   AUTH_COOKIE_SAME_SITE=Lax
-   CSRF_COOKIE_NAME=csrf_token
-   CSRF_HEADER_NAME=X-CSRF-Token
-   CSRF_COOKIE_SECURE=false
-   ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
-   WALLET_CURRENCY=UAH
-   WALLET_TOP_UP_OPTIONS=300.00,500.00,1000.00
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   ```
+### Prerequisites
+- **Java 17+** (JDK)
+- **Maven 3.9+** (or use included `./mvnw`)
+- **Docker & Docker Compose** (for PostgreSQL database and Testcontainers)
+- **Cloudinary Account** (for property photo and avatar uploads)
 
-   You can also create `src/main/resources/application-secret.properties` (not committed to VCS) and define the same keys there for local development.
+---
 
-3. **Configure PostgreSQL**
+### Option 1: Hybrid Development (Recommended)
 
-   Create a database and user that match your `application.properties`:
+Run PostgreSQL in Docker, and run Backend locally with hot-reloading:
 
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/rentify
-   spring.datasource.username=postgres
-   spring.datasource.password=${DB_PASSWORD}
-   ```
+```bash
+# 1. Clone the repository
+git clone https://github.com/polchduikt/rentify-backend.git
+cd rentify-backend
 
-4. **Build and run the application**
+# 2. Start PostgreSQL container
+docker compose up -d db
 
-   ```bash
-   # Run tests (optional but recommended)
-   mvn test
+# 3. Create .env file or application-secret.properties
+cp .env.example .env
 
-   # Start the application
-   mvn spring-boot:run
-   ```
+# 4. Start the Spring Boot application
+./mvnw spring-boot:run
+```
 
-   By default the server runs on `http://localhost:8080`.
+---
 
+### Option 2: Full Docker Stack
 
-5. **Run in Docker **
+Run PostgreSQL, Backend API, and Frontend SPA simultaneously in Docker:
 
+```bash
+docker compose up --build -d
+```
 
-   1. Create `.env` from `.env.example` and fill values.
-   2. Start containers:
+To stop all containers:
 
-   ```bash
-   docker compose up --build -d db backend
-   ```
+```bash
+docker compose down
+```
 
-   3. Stop:
+---
 
-   ```bash
-   docker compose down
-   ```
+### Environment Variables
 
-## Running Integration Tests
+Configure environment variables in `.env` or in `src/main/resources/application-secret.properties`:
 
-#### Requirements
-- Java 21
-- Docker Desktop (https://docker.com/products/docker-desktop)
+```properties
+# Database Configuration
+DB_URL=jdbc:postgresql://localhost:5432/rentify
+DB_USERNAME=postgres
+DB_PASSWORD=your_secure_password
 
-#### Windows (one-time setup)
-1. Start Docker Desktop.
-2. Settings -> General -> enable `Expose daemon on tcp://localhost:2375 without TLS`.
-3. Run in PowerShell as Administrator:
+# Security & JWT
+SECRET_KEY=your_base64_encoded_jwt_secret_key_min_256_bits
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+
+# Auth Strategy (cookie or bearer)
+AUTH_STRATEGY=cookie
+AUTH_COOKIE_NAME=rentify_access_token
+AUTH_COOKIE_DOMAIN=
+AUTH_COOKIE_SECURE=false
+AUTH_COOKIE_SAME_SITE=Lax
+CSRF_COOKIE_NAME=csrf_token
+CSRF_HEADER_NAME=X-CSRF-Token
+CSRF_COOKIE_SECURE=false
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+
+# Wallet & Currency
+WALLET_CURRENCY=UAH
+WALLET_TOP_UP_OPTIONS=300.00,500.00,1000.00
+
+# Cloudinary CDN Integration
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+---
+
+### Testcontainers Setup on Windows
+
+To run Testcontainers integration tests smoothly on Windows:
+
+1. In **Docker Desktop** -> **Settings** -> **General** -> Enable `Expose daemon on tcp://localhost:2375 without TLS`.
+2. Run in PowerShell (Administrator):
 
 ```powershell
 [System.Environment]::SetEnvironmentVariable("DOCKER_API_VERSION", "1.47", "Machine")
@@ -200,133 +264,45 @@ New-Item -Path "$env:USERPROFILE\.testcontainers.properties" -ItemType File -For
 Set-Content "$env:USERPROFILE\.testcontainers.properties" "docker.host=npipe:////./pipe/docker_engine_linux`ntestcontainers.reuse.enable=true"
 ```
 
-4. Restart IntelliJ IDEA.
+3. Restart your IDE and run `./mvnw test`.
 
-#### Run
-```bash
-./mvnw test                                    # all tests
-./mvnw test -Dtest=RegistrationIntegrationTest # one class
-```
+---
 
-### API Overview Diagram
+### Available Local Endpoints:
+- **Backend REST API**: [http://localhost:8080/api/v1](http://localhost:8080/api/v1)
+- **Swagger / OpenAPI Documentation**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **OpenAPI JSON Specification**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- **PostgreSQL Database**: `localhost:5432`
 
-![Rentify API overview](docs/screenshots/api-overview.png)
-Іnfrastructure overview
+---
 
-### API Highlights
+## API Documentation & Surface
 
-All endpoints are prefixed with `/api/v1`.
+The complete, versioned REST API specification, request/response payload schemas, parameter types, and security policies are documented in the dedicated reference guide:
 
-#### Authentication
+[Complete API Surface Specification (docs/API_SURFACE.md)](docs/API_SURFACE.md)
 
-- **POST** `/api/v1/auth/register` – Register a new user and receive JWT tokens (or auth cookie).
-- **POST** `/api/v1/auth/login` – Login with email and password.
-- **POST** `/api/v1/auth/google` – Authenticate using a Google ID token.
-- **POST** `/api/v1/auth/logout` – Logout and clear session cookie (in cookie mode).
+### Interactive OpenAPI / Swagger UI
+The backend provides real-time interactive OpenAPI 3.0 documentation generated automatically via SpringDoc:
 
-#### Users
+- **Swagger UI**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **OpenAPI 3.0 JSON Schema**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
-- **GET** `/api/v1/users/profile` – Get current authenticated user profile.
-- **GET** `/api/v1/users/{userId}/public` – Get public profile data by user ID.
-- **PUT** `/api/v1/users/profile` – Update current user profile.
-- **PATCH** `/api/v1/users/profile/password` – Change current user password.
-- **DELETE** `/api/v1/users/profile` – Deactivate current user account.
-- **POST** `/api/v1/users/profile/avatar` – Upload user avatar (multipart `file`).
-- **DELETE** `/api/v1/users/profile/avatar` – Delete current user avatar.
+To test secured endpoints directly in Swagger UI:
+1. Authenticate via `POST /api/v1/sessions` (or `POST /api/v1/users`).
+2. Copy the returned `token`.
+3. Click the **Authorize** button at the top of the Swagger page and enter `Bearer <your_token>`.
 
-#### Properties
+---
 
-- **GET** `/api/v1/properties` – Get paginated list of public properties.
-- **GET** `/api/v1/properties/my` – Get current user (host) properties, optional `statuses` filter.
-- **GET** `/api/v1/properties/{id}` – Get property details by ID.
-- **POST** `/api/v1/properties` – Create property (host only).
-- **PUT** `/api/v1/properties/{id}` – Update property (owner only).
-- **DELETE** `/api/v1/properties/{id}` – Delete property (owner only).
+## Status
 
-**Photos**
+Rentify Backend is actively maintained and continuously enhanced with new features, performance optimizations, and integrations.
 
-- **POST** `/api/v1/properties/{id}/photos` – Upload property photo (multipart `file`).
-- **DELETE** `/api/v1/properties/{id}/photos/{photoId}` – Delete property photo.
+---
 
-**Search & Map**
+## License
 
-- **GET** `/api/v1/properties/search` – Search properties by filters (query parameters).
-- **GET** `/api/v1/properties/search/map-pins` – Retrieve property map pins for map views.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-**Availability**
-
-- **POST** `/api/v1/properties/{id}/availability` – Create availability block for property.
-- **GET** `/api/v1/properties/{propertyId}/availability` – Get manual availability blocks.
-- **GET** `/api/v1/properties/{propertyId}/availability/unavailable` – Get merged unavailable date ranges for calendars.
-- **PATCH** `/api/v1/properties/{id}/status` – Change property status (e.g. DRAFT, ACTIVE).
-- **DELETE** `/api/v1/properties/{propertyId}/availability/{blockId}` – Delete availability block.
-
-#### Bookings
-
-- **POST** `/api/v1/bookings` – Create booking for a property.
-- **GET** `/api/v1/bookings/my` – Get paginated bookings of current user (guest side).
-- **GET** `/api/v1/bookings/{id}` – Get booking by ID (guest or host participant).
-- **PATCH** `/api/v1/bookings/{id}/cancel` – Cancel booking.
-- **GET** `/api/v1/bookings/incoming` – Get paginated incoming bookings for host‑owned properties.
-- **PATCH** `/api/v1/bookings/{id}/confirm` – Confirm booking (host only).
-- **PATCH** `/api/v1/bookings/{id}/reject` – Reject booking (host only).
-
-#### Payments
-
-- **POST** `/api/v1/payments/bookings/{bookingId}/mock-pay` – Create mock payment for booking (dev/testing).
-- **GET** `/api/v1/payments/my` – Get payments of current user.
-- **GET** `/api/v1/payments/bookings/{bookingId}` – Get payments by booking ID.
-
-#### Wallet
-
-- **GET** `/api/v1/wallet` – Get current user wallet balance info.
-- **POST** `/api/v1/wallet/top-up` – Top up wallet balance.
-- **GET** `/api/v1/wallet/transactions` – Get paginated wallet transactions.
-- **GET** `/api/v1/wallet/top-up-options` – Get allowed top‑up amounts.
-
-#### Favorites
-
-- **POST** `/api/v1/favorites/{propertyId}` – Add property to favorites.
-- **DELETE** `/api/v1/favorites/{propertyId}` – Remove property from favorites.
-- **GET** `/api/v1/favorites` – Get current user favorite properties.
-
-#### Reviews
-
-- **POST** `/api/v1/reviews` – Create review for completed booking (authenticated).
-- **GET** `/api/v1/reviews/property/{propertyId}` – Get paginated reviews for property.
-
-#### Conversations
-
-- **POST** `/api/v1/conversations/property/{propertyId}` – Start conversation & send first message for property.
-- **POST** `/api/v1/conversations/{conversationId}/reply` – Reply in existing conversation.
-- **GET** `/api/v1/conversations` – Get conversations of current user.
-- **GET** `/api/v1/conversations/{conversationId}/messages` – Get messages of specific conversation.
-
-#### Locations
-
-- **GET** `/api/v1/locations/suggest` – Get location suggestions by query (`q`), optional `cityId`, `types`, `limit`.
-
-#### Amenities
-
-- **GET** `/api/v1/amenities` – Get amenities, optional `category` filter.
-- **GET** `/api/v1/amenities/grouped` – Get amenities grouped by category.
-
-#### Promotions
-
-- **GET** `/api/v1/promotions/top-packages` – Get top‑promotion packages.
-- **GET** `/api/v1/promotions/subscription-packages` – Get subscription packages.
-- **POST** `/api/v1/promotions/properties/{propertyId}/top` – Purchase top‑promotion package for property.
-- **POST** `/api/v1/promotions/subscription` – Purchase subscription package.
-
-Swagger UI is available in development at:
-
-- `http://localhost:8080/swagger-ui/index.html`
-
-### Project Status
-
-The project is under active development and continuously improved. Current focuses include deeper booking analytics, extended payment flows, and improved performance for high‑traffic search and calendar endpoints.
-
-### License
-
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
