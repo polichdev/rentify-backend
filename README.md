@@ -1,4 +1,4 @@
-# Rentify Backend — Real Estate & Property Rental Marketplace REST API
+# Rentify Backend — Property Rental Marketplace REST API
 
 [![Tests: 200+ Passing](https://img.shields.io/badge/Tests-200%2B%20Passing-brightgreen.svg)](#testing--code-quality)
 [![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0_Spec-6BA539.svg?logo=openapiinitiative&logoColor=white)](docs/API_SURFACE.md)
