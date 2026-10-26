@@ -14,8 +14,8 @@ Security updates and patches are actively maintained for the following versions:
 
 | Version | Supported | Notes |
 |:---:|:---:|---|
-| `1.x.x` | :white_check_mark: | Current production release line |
-| `< 1.0` | :x: | Deprecated pre-release versions |
+| `1.x.x` | Yes | Current production release line |
+| `< 1.0` | No | Deprecated pre-release versions |
 
 ---
 

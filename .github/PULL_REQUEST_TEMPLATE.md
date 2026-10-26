@@ -5,13 +5,13 @@
 <!-- Link related issue(s) here, e.g. Fixes #123, Closes #456 -->
 
 ## Type of Change
-- [ ] 🐛 Bug fix (non-breaking change fixing an issue)
-- [ ] ✨ New feature (non-breaking change adding functionality)
-- [ ] 💥 Breaking change (fix or feature causing existing functionality to break)
-- [ ] ⚡ Performance improvement
-- [ ] 📝 Documentation update
-- [ ] 🧪 Testing addition or improvement
-- [ ] 🔧 Refactoring / Code cleanup
+- [ ] Bug fix (non-breaking change fixing an issue)
+- [ ] New feature (non-breaking change adding functionality)
+- [ ] Breaking change (fix or feature causing existing functionality to break)
+- [ ] Performance improvement
+- [ ] Documentation update
+- [ ] Testing addition or improvement
+- [ ] Refactoring / Code cleanup
 
 ## Subsystems Impacted
 - [ ] Authentication & Security (JWT, Cookies, CSRF, Redis)
