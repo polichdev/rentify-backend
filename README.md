@@ -32,6 +32,24 @@ Engineered with **Clean Architecture**, **Domain-Driven Design (DDD)** principle
 
 ---
 
+## 📚 Engineering Documentation
+
+The project includes production-grade engineering specifications, C4 architecture diagrams, threat models, and architectural decision records:
+
+| Document | Purpose & Highlights |
+|---|---|
+| [**Architecture & System Design**](docs/ARCHITECTURE.md) | C4 Context & Container diagrams, Clean Architecture layers, Booking State Machine, Dual-Auth flows |
+| [**Database Schema & Data Architecture**](docs/DATABASE_SCHEMA.md) | Mermaid ER diagram, table dictionaries, indexing strategies, audit policies, anti-N+1 rules |
+| [**Concurrency & Transaction Locking**](docs/CONCURRENCY_AND_LOCKING.md) | Double-booking collision detection algorithm, wallet double-spending prevention (`FOR UPDATE`) |
+| [**Threat Model & Security Architecture**](docs/THREAT_MODEL.md) | STRIDE framework analysis, trust boundaries, CSRF handshakes, IDOR prevention, RBAC matrix |
+| [**Failures, Resilience & Recovery**](docs/FAILURES_AND_RECOVERY.md) | RFC 7807 ProblemDetail error format, HikariCP failover, Redis and Cloudinary outage fallbacks |
+| [**Testing Strategy & Quality Assurance**](docs/TESTING_STRATEGY.md) | Testing pyramid, hermetic PostgreSQL 16 Testcontainers integration tests, mock policies |
+| [**Deployment, Operations & DevOps**](docs/DEPLOYMENT_AND_DEVOPS.md) | Multi-stage Docker build, Docker Compose orchestration, environment variables, healthchecks |
+| [**API Surface Specification**](docs/API_SURFACE.md) | Exhaustive REST endpoint catalog with request/response schemas and authorization requirements |
+| [**Architecture Decision Records (ADRs)**](docs/adr/) | Formal decision logs (JWT with Redis blacklist, dual-mode auth, immutable wallet ledger, etc.) |
+
+---
+
 ## Tech Stack
 
 ### Core Frameworks & Runtime

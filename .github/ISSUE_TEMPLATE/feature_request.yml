@@ -1,0 +1,34 @@
+name: 💡 Feature Request
+description: Propose a new feature, architecture enhancement, or optimization
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement for Rentify Backend!
+  - type: input
+    id: title
+    attributes:
+      label: Feature Title
+      description: Concise summary of the requested feature
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Business Need
+      description: What challenge or user need does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Architecture
+      description: How should this be implemented? Mention entities, endpoints, or patterns if known.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative libraries or designs evaluated

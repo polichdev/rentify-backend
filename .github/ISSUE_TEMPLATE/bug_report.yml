@@ -1,0 +1,61 @@
+name: 🐛 Bug Report
+description: Create a report to help us reproduce and fix a bug
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue! Please provide as much context as possible to help us reproduce and address it.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Brief summary of the issue
+    validations:
+      required: true
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Affected Subsystem
+      options:
+        - Authentication & Security
+        - Property Management & Search
+        - Availability & Calendar Matrix
+        - Bookings & Reservations
+        - Wallet & Transactions
+        - Messaging
+        - Reviews & Ratings
+        - DevOps & Infrastructure
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. POST /api/v1/sessions with credentials ...
+        2. POST /api/v1/bookings with payload ...
+        3. See error response ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen under correct operation
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior / Error Logs
+      description: Provide the RFC 7807 ProblemDetail or stack trace
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Java version, Docker version, OS, DB version
+      placeholder: "Java 17, PostgreSQL 16, Docker 27.x"
